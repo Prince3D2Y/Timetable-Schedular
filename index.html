@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Smart Timetable Scheduler</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 10px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: #2f2e41cc;
+            border-radius: 15px;
+            padding: 25px 35px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 1000px;
+        }
+        h1 {
+            text-align: center;
+            font-weight: 700;
+            font-size: 3em;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 6px #000000aa;
+        }
+        a.button-link {
+            display: inline-block;
+            background-color: #6c63ff;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            margin-right: 12px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 10px #6c63ffaa;
+        }
+        a.button-link:hover {
+            background-color: #5848c2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+        th, td {
+            border: 1px solid #6c63ff88;
+            padding: 12px 18px;
+            text-align: center;
+            font-weight: 600;
+            color: #eee;
+        }
+        th {
+            background-color: #6c63ffcc;
+        }
+        tr:nth-child(even) td {
+            background: #352f6bcc;
+        }
+        button.remove-btn {
+            background: #ff6b6b;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px #ff6b6baa;
+            transition: background-color 0.3s ease;
+        }
+        button.remove-btn:hover {
+            background-color: #d95c5c;
+        }
+        .flash-messages {
+            max-width: 600px;
+            margin: 0 auto 20px;
+            padding: 12px 20px;
+            background-color: #4caf50cc;
+            color: white;
+            font-weight: 700;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px #4caf5088;
+            text-align: center;
+        }
+        h2.day-heading {
+            margin-top: 40px;
+            margin-bottom: 15px;
+            text-align: left;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 3px #00000080;
+        }
+        .assistant-btn {
+            position: fixed;
+            right: 34px;
+            bottom: 34px;
+            z-index: 1010;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to right, #6c63ff, #764ba2);
+            color: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px #6c63ffaa, 0 0 40px #fff6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7em;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: box-shadow 0.25s, background 0.2s;
+        }
+        .assistant-btn:hover {
+            background: linear-gradient(to right, #5848c2, #667eea);
+            box-shadow: 0 8px 32px #6c63ffcc, 0 0 60px #fff9;
+            transform: scale(1.10);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Smart Classroom & Timetable Scheduler</h1>
+        <a href="{{ url_for('add') }}" class="button-link">Add Class</a>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for msg in messages %}
+                <div>{{ msg }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% for day in weekdays %}
+            <h2 class="day-heading">{{ day }}</h2>
+            {% if timetable[day]|length == 0 %}
+                <p>No classes scheduled.</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <th>Timeslot</th>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for entry in timetable[day] %}
+                    <tr>
+                        <td>{{ entry.slot }}</td>
+                        <td>{{ entry.subject }}</td>
+                        <td>{{ entry.teacher }}</td>
+                        <td>
+                            <form action="{{ url_for('remove', day=day, slot=entry.slot) }}" method="POST" onsubmit="return confirm('Remove class for {{ entry.subject }} at {{ entry.slot }}?');" style="margin: 0;">
+                                <button type="submit" class="remove-btn">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('bot') }}" target="_blank" rel="noopener noreferrer">
+        <button class="assistant-btn" title="Chat with Assistant">&#128172;</button>
+    </a>
+</body>
+</html>

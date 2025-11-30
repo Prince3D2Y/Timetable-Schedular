@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Class - Scheduler</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #2f2e41cc;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-sizing: border-box;
+            width: 380px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 2em;
+            text-shadow: 1px 1px 3px #00000088;
+        }
+        label {
+            display: block;
+            text-align: left;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            cursor: pointer;
+            width: 100%;
+            padding: 12px 0;
+            background-color: #6c63ff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+            box-shadow: 0 6px 14px #6c63ffcc;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #5751d1;
+        }
+        a.back-link {
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            color: #b0b0ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a.back-link:hover {
+            color: white;
+        }
+        .flash-messages {
+            background-color: #ff4b4bcc;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px #ff4b4b88;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Add Class</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="flash-messages">
+          {% for msg in messages %}
+          <div>{{ msg }}</div>
+          {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+        <label for="teacher">Teacher:</label>
+        <input type="text" id="teacher" name="teacher" required>
+        <label for="slot">Timeslot:</label>
+        <input type="text" id="slot" name="slot" placeholder="e.g., 9:00-10:00" required>
+        <label for="day">Day:</label>
+        <select id="day" name="day" required>
+            <option value="" disabled selected>Select Day</option>
+            {% for d in weekdays %}
+            <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Add Class">
+    </form>
+    <a href="{{ url_for('index') }}" class="back-link">&larr; Back to Timetable</a>
+</div>
+</body>
+</html>
